@@ -28,8 +28,11 @@ class TestFileUtils(unittest.TestCase):
             pathlib.Path(os.path.join(self.TEST_DIR, filename)).touch()
             with pytest.raises(FileNotFoundError):
                 filename_to_url(filename, cache_dir=self.TEST_DIR)
-            json.dump({'url': url, 'etag': None},
-                      open(os.path.join(self.TEST_DIR, filename + '.json'), 'w'))
+            json.dump(
+                {'url': url, 'etag': None},
+                open(os.path.join(self.TEST_DIR, f'{filename}.json'), 'w'),
+            )
+
             back_to_url, etag = filename_to_url(filename, cache_dir=self.TEST_DIR)
             assert back_to_url == url
             assert etag is None
@@ -40,13 +43,16 @@ class TestFileUtils(unittest.TestCase):
             filename = url_to_filename(url, etag="mytag")
             assert "http" not in filename
             pathlib.Path(os.path.join(self.TEST_DIR, filename)).touch()
-            json.dump({'url': url, 'etag': 'mytag'},
-                      open(os.path.join(self.TEST_DIR, filename + '.json'), 'w'))
+            json.dump(
+                {'url': url, 'etag': 'mytag'},
+                open(os.path.join(self.TEST_DIR, f'{filename}.json'), 'w'),
+            )
+
             back_to_url, etag = filename_to_url(filename, cache_dir=self.TEST_DIR)
             assert back_to_url == url
             assert etag == "mytag"
         baseurl = 'http://allenai.org/'
-        assert url_to_filename(baseurl + '1') != url_to_filename(baseurl, etag='1')
+        assert url_to_filename(f'{baseurl}1') != url_to_filename(baseurl, etag='1')
 
     def test_url_to_filename_with_etags_eliminates_quotes(self):
         for url in ['http://allenai.org', 'http://cool.org',
@@ -54,8 +60,11 @@ class TestFileUtils(unittest.TestCase):
             filename = url_to_filename(url, etag='"mytag"')
             assert "http" not in filename
             pathlib.Path(os.path.join(self.TEST_DIR, filename)).touch()
-            json.dump({'url': url, 'etag': 'mytag'},
-                      open(os.path.join(self.TEST_DIR, filename + '.json'), 'w'))
+            json.dump(
+                {'url': url, 'etag': 'mytag'},
+                open(os.path.join(self.TEST_DIR, f'{filename}.json'), 'w'),
+            )
+
             back_to_url, etag = filename_to_url(filename, cache_dir=self.TEST_DIR)
             assert back_to_url == url
             assert etag == "mytag"

@@ -21,7 +21,7 @@ class TestDataUtil(unittest.TestCase):
     def test_example_iterator(self):
         iterator = med_mentions_example_iterator(self.med_mentions)
         for example in iterator:
-            assert example.text == example.title + " " + example.abstract
+            assert example.text == f'{example.title} {example.abstract}'
 
             for entity in example.entities:
                 assert entity.start < entity.end

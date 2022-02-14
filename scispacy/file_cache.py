@@ -64,7 +64,7 @@ def url_to_filename(url: str, etag: str = None) -> str:
         etag_hash = sha256(etag_bytes)
         filename += "." + etag_hash.hexdigest()
 
-    filename += "." + last_part
+    filename += f'.{last_part}'
     return filename
 
 
@@ -80,7 +80,7 @@ def filename_to_url(filename: str, cache_dir: str = None) -> Tuple[str, str]:
     if not os.path.exists(cache_path):
         raise FileNotFoundError("file {} not found".format(cache_path))
 
-    meta_path = cache_path + ".json"
+    meta_path = f'{cache_path}.json'
     if not os.path.exists(meta_path):
         raise FileNotFoundError("file {} not found".format(meta_path))
 
@@ -144,7 +144,7 @@ def get_from_cache(url: str, cache_dir: str = None) -> str:
                 shutil.copyfileobj(temp_file, cache_file)
 
             meta = {"url": url, "etag": etag}
-            meta_path = cache_path + ".json"
+            meta_path = f'{cache_path}.json'
             with open(meta_path, "w") as meta_file:
                 json.dump(meta, meta_file)
 

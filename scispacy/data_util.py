@@ -45,7 +45,7 @@ def process_example(lines: List[str]) -> MedMentionExample:
             MedMentionEntity(int(start), int(end), mention, mention_type, umls_id)
         )
     return MedMentionExample(
-        title, abstract, title + " " + abstract, pubmed_id, entities
+        title, abstract, f'{title} {abstract}', pubmed_id, entities
     )
 
 
@@ -56,8 +56,7 @@ def med_mentions_example_iterator(filename: str) -> Iterator[MedMentionExample]:
     with open(filename, "r", encoding="utf-8") as med_mentions_file:
         lines = []
         for line in med_mentions_file:
-            line = line.strip()
-            if line:
+            if line := line.strip():
                 lines.append(line)
             else:
                 yield process_example(lines)
@@ -76,9 +75,8 @@ def select_subset_of_overlapping_chain(
     """
     sorted_chain = sorted(chain, key=lambda x: x[1] - x[0], reverse=True)
     selections_from_chain: List[Tuple[int, int, str]] = []
-    chain_index = 0
     # dump the current chain by greedily keeping the longest entity that doesn't overlap
-    while chain_index < len(sorted_chain):
+    for chain_index in range(len(sorted_chain)):
         entity = sorted_chain[chain_index]
         match_found = False
         for already_selected_entity in selections_from_chain:
@@ -90,8 +88,6 @@ def select_subset_of_overlapping_chain(
 
         if not match_found:
             selections_from_chain.append(entity)
-
-        chain_index += 1
 
     return selections_from_chain
 
@@ -113,15 +109,10 @@ def remove_overlapping_entities(
         current_entity_start = current_entity[0]
         current_entity_end = current_entity[1]
 
-        if len(current_overlapping_chain) == 0:
-            current_overlapping_chain.append(current_entity)
-            current_overlapping_chain_start = current_entity_start
-            current_overlapping_chain_end = current_entity_end
-        else:
+        if current_overlapping_chain:
             min_end = min(current_entity_end, current_overlapping_chain_end)
             max_start = max(current_entity_start, current_overlapping_chain_start)
             if min_end - max_start > 0:
-                current_overlapping_chain.append(current_entity)
                 current_overlapping_chain_start = min(
                     current_entity_start, current_overlapping_chain_start
                 )
@@ -135,10 +126,13 @@ def remove_overlapping_entities(
 
                 current_overlapping_chain = []
                 spacy_format_entities_without_overlap.extend(selections_from_chain)
-                current_overlapping_chain.append(current_entity)
                 current_overlapping_chain_start = current_entity_start
                 current_overlapping_chain_end = current_entity_end
 
+        else:
+            current_overlapping_chain_start = current_entity_start
+            current_overlapping_chain_end = current_entity_end
+        current_overlapping_chain.append(current_entity)
     spacy_format_entities_without_overlap.extend(
         select_subset_of_overlapping_chain(current_overlapping_chain)
     )
@@ -202,10 +196,7 @@ def read_full_med_mentions(
     def label_function(label):
         if span_only:
             return "ENTITY"
-        if label_mapping is None:
-            return label
-        else:
-            return label_mapping[label]
+        return label if label_mapping is None else label_mapping[label]
 
     for example in examples:
         spacy_format_entities = [
@@ -245,9 +236,7 @@ def _handle_sentence(examples: List[Tuple[str, str]]) -> SpacyNerExample:
         sent += word
         sent += " "
         if entity != "O":
-            if in_entity:
-                pass
-            else:
+            if not in_entity:
                 start_index = current_index
                 in_entity = True
                 entity_type = entity[2:].upper()

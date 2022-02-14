@@ -34,7 +34,7 @@ def combined_rule_prefixes() -> List[str]:
     prefix_punct = prefix_punct.replace(r"\[", r"\[(?![^\[\s]+\]\S+)")
     prefix_punct = prefix_punct.replace(r"\{", r"\{(?![^\{\s]+\}\S+)")
 
-    prefixes = (
+    return (
         ["§", "%", "=", r"\+"]
         + char_classes.split_chars(prefix_punct)
         + char_classes.LIST_ELLIPSES
@@ -42,7 +42,6 @@ def combined_rule_prefixes() -> List[str]:
         + char_classes.LIST_CURRENCY
         + char_classes.LIST_ICONS
     )
-    return prefixes
 
 
 def combined_rule_tokenizer(nlp: Language) -> Tokenizer:
@@ -125,7 +124,7 @@ def combined_rule_tokenizer(nlp: Language) -> Tokenizer:
     tokenizer_exceptions = nlp.Defaults.tokenizer_exceptions.copy()
     tokenizer_exceptions.update(exclusions)
 
-    tokenizer = Tokenizer(
+    return Tokenizer(
         nlp.vocab,
         tokenizer_exceptions,
         prefix_search=prefix_re.search,
@@ -133,4 +132,3 @@ def combined_rule_tokenizer(nlp: Language) -> Tokenizer:
         infix_finditer=infix_re.finditer,
         token_match=nlp.tokenizer.token_match,  # type: ignore
     )
-    return tokenizer

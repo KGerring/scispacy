@@ -106,7 +106,7 @@ def filter_matches(
             short_form_candidate = doc[start:end]
 
             # Sum character lengths of contents of parens.
-            abbreviation_length = sum([len(x) for x in short_form_candidate])
+            abbreviation_length = sum(len(x) for x in short_form_candidate)
             max_words = min(abbreviation_length + 5, abbreviation_length * 2)
             # Look up to max_words backwards
             long_form_candidate = doc[max(start - max_words - 1, 0) : start - 1]
@@ -120,11 +120,11 @@ def filter_matches(
 
 def short_form_filter(span: Span) -> bool:
     # All words are between length 2 and 10
-    if not all([2 <= len(x) < 10 for x in span]):
+    if not all(2 <= len(x) < 10 for x in span):
         return False
 
     # At least 50% of the short form should be alpha
-    if (sum([c.isalpha() for c in span.text]) / len(span.text)) < 0.5:
+    if sum(c.isalpha() for c in span.text) / len(span.text) < 0.5:
         return False
 
     # The first character of the short form should be alpha
@@ -179,10 +179,7 @@ class AbbreviationDetector:
         filtered = filter_matches(dummy_matches, doc)
         abbreviations = self.find_matches_for(filtered, doc)
 
-        if not abbreviations:
-            return span, set()
-        else:
-            return abbreviations[0]
+        return (span, set()) if not abbreviations else abbreviations[0]
 
     def __call__(self, doc: Doc) -> Doc:
         matches = self.matcher(doc)
@@ -236,7 +233,7 @@ class AbbreviationDetector:
             # Clean up the global matcher.
             self.global_matcher.remove(key)
 
-        return list((k, v) for k, v in all_occurences.items())
+        return list(all_occurences.items())
 
     def make_short_form_serializable(self, abbreviation: Span):
         """
@@ -249,7 +246,7 @@ class AbbreviationDetector:
         """
         long_form = abbreviation._.long_form
         abbreviation._.long_form = long_form.text
-        serializable_abbr = {
+        return {
             "short_text": abbreviation.text,
             "short_start": abbreviation.start,
             "short_end": abbreviation.end,
@@ -257,4 +254,3 @@ class AbbreviationDetector:
             "long_start": long_form.start,
             "long_end": long_form.end,
         }
-        return serializable_abbr

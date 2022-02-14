@@ -38,15 +38,15 @@ def pysbd_sentencizer(doc: Doc) -> Doc:
     for token in doc:
         prev_token = token.nbor(-1) if token.i != 0 else None
         if token.idx in start_token_char_offsets:
-            if prev_token and (
-                prev_token.text in ABBREVIATIONS
-                # Glom new lines at the beginning of the text onto the following sentence
-                or (prev_token.i == 0 and all(c == "\n" for c in prev_token.text))
-            ):
-                token.is_sent_start = False
-            else:
-                token.is_sent_start = True
-        # check if previous token contains more than 2 newline chars
+            token.is_sent_start = (
+                not prev_token
+                or prev_token.text not in ABBREVIATIONS
+                and (
+                    prev_token.i != 0
+                    or any(c != "\n" for c in prev_token.text)
+                )
+            )
+
         elif prev_token and prev_token.i != 0 and prev_token.text.count("\n") >= 2:
             token.is_sent_start = True
         else:

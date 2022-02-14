@@ -28,9 +28,7 @@ def read_umls_file_headers(meta_path: str, filename: str) -> List[str]:
         for line in fin:
             splits = line.split("|")
             found_filename = splits[0]
-            column_names = (splits[2] + ",").split(
-                ","
-            )  # ugly hack because all files end with an empty column
+            column_names = f'{splits[2]},'.split(",")
             if found_filename in filename:
                 return column_names
     assert False, f"Couldn't find column names for file {filename}"
@@ -67,9 +65,8 @@ def read_umls_concepts(meta_path: str, concept_details: Dict, source: str = None
             if concept["LAT"] != "ENG" or concept["SUPPRESS"] != "N":
                 continue  # Keep English non-suppressed concepts only
 
-            if source is not None:
-                if concept["SAB"] != source:
-                    continue
+            if source is not None and concept["SAB"] != source:
+                continue
 
             concept_id = concept["CUI"]
             if concept_id not in concept_details:  # a new concept

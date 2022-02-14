@@ -59,12 +59,11 @@ def parser_tagger_data(
         )
 
     def mixed_corpus(nlp: Language) -> Iterator[Example]:
-        if mixin_data_path is not None:
-            main_examples = main_corpus(nlp)
-            mixin_examples = iter_sample(mixin_corpus(nlp), mixin_data_percent)
-            return itertools.chain(main_examples, mixin_examples)
-        else:
+        if mixin_data_path is None:
             return main_corpus(nlp)
+        main_examples = main_corpus(nlp)
+        mixin_examples = iter_sample(mixin_corpus(nlp), mixin_data_percent)
+        return itertools.chain(main_examples, mixin_examples)
 
     return mixed_corpus
 

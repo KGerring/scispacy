@@ -12,8 +12,8 @@ class TestPerClassScorer(unittest.TestCase):
 
         predicted = [(1, 3, "PER"), (10, 12, "LOC")]
         gold = [(1, 3, "PER"), (10, 12, "ORG")]
-        original_gold = [x for x in gold]
-        original_predicted = [x for x in predicted]
+        original_gold = list(gold)
+        original_predicted = list(predicted)
 
         scorer(predicted, gold)
 

@@ -43,7 +43,7 @@ def test_custom_segmentation(combined_all_model_fixture):
 
 def test_full_pipe_serializable(combined_all_model_fixture):
     text = "Induction of cytokine expression in leukocytes (CEIL) by binding of thrombin-stimulated platelets. BACKGROUND: Activated platelets tether and activate myeloid leukocytes."
-    doc = [doc for doc in combined_all_model_fixture.pipe([text, text], n_process = 2)][0]
+    doc = list(combined_all_model_fixture.pipe([text, text], n_process = 2))[0]
     # If we got here this means that both model is serializable and there is an abbreviation that would break if it wasn't
     assert len(doc._.abbreviations) > 0
     abbrev = doc._.abbreviations[0]

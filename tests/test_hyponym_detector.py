@@ -27,8 +27,8 @@ class TestHyponymDetector(unittest.TestCase):
         assert doc._.hearst_patterns == [("other", doc[4:5], doc[0:1])]
         doc = self.nlp("Coronaviruses, including SARS and MERS, are bad.")
         assert doc._.hearst_patterns == [
-            ("include", doc[0:1], doc[3:4]),
-            ("include", doc[0:1], doc[5:6]),
+            ("include", doc[:1], doc[3:4]),
+            ("include", doc[:1], doc[5:6]),
         ]
 
     def test_find_noun_compound_head(self):
@@ -47,4 +47,4 @@ class TestHyponymDetector(unittest.TestCase):
     def test_expand_noun_phrase(self):
         doc = self.nlp("Keystone plant habitats are good.")
         chunk = self.detector.expand_to_noun_compound(doc[1], doc)
-        assert chunk == doc[0:3]
+        assert chunk == doc[:3]
