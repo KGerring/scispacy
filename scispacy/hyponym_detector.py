@@ -70,7 +70,7 @@ class HyponymDetector:
 
         start = token.i
         while True:
-            if start - 1 < 0:
+            if start < 1:
                 break
             previous_token = doc[start - 1]
             if previous_token.pos_ in {"PROPN", "NOUN", "PRON"}:

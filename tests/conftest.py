@@ -58,20 +58,26 @@ def get_spacy_model(
 @pytest.fixture()
 def combined_rule_tokenizer_fixture():
     nlp = get_spacy_model("en_core_web_sm", True, True, True)
-    tokenizer = combined_rule_tokenizer(nlp)
-    return tokenizer
+    return combined_rule_tokenizer(nlp)
 
 
 @pytest.fixture()
 def en_with_combined_rule_tokenizer_fixture():
-    nlp = get_spacy_model("en_core_web_sm", True, True, True, with_custom_tokenizer=True)
-    return nlp
+    return get_spacy_model(
+        "en_core_web_sm", True, True, True, with_custom_tokenizer=True
+    )
 
 
 @pytest.fixture()
 def en_with_combined_rule_tokenizer_and_segmenter_fixture():
-    nlp = get_spacy_model("en_core_web_sm", True, True, True, with_custom_tokenizer=True, with_sentence_segmenter=True)
-    return nlp
+    return get_spacy_model(
+        "en_core_web_sm",
+        True,
+        True,
+        True,
+        with_custom_tokenizer=True,
+        with_sentence_segmenter=True,
+    )
 
 
 @pytest.fixture()
@@ -101,13 +107,27 @@ def test_model_dir():
 
 @pytest.fixture()
 def combined_all_model_fixture():
-    nlp = get_spacy_model("en_core_sci_sm", True, True, True, with_custom_tokenizer=True, with_sentence_segmenter=False, with_serializable_abbreviation_detector=True)
-    return nlp
+    return get_spacy_model(
+        "en_core_sci_sm",
+        True,
+        True,
+        True,
+        with_custom_tokenizer=True,
+        with_sentence_segmenter=False,
+        with_serializable_abbreviation_detector=True,
+    )
 
 @pytest.fixture()
 def combined_all_model_fixture_non_serializable_abbrev():
-    nlp = get_spacy_model("en_core_sci_sm", True, True, True, with_custom_tokenizer=True, with_sentence_segmenter=False, with_serializable_abbreviation_detector=False)
-    return nlp
+    return get_spacy_model(
+        "en_core_sci_sm",
+        True,
+        True,
+        True,
+        with_custom_tokenizer=True,
+        with_sentence_segmenter=False,
+        with_serializable_abbreviation_detector=False,
+    )
 
 @pytest.fixture()
 def combined_rule_prefixes_fixture():
@@ -127,5 +147,4 @@ def default_en_tokenizer_fixture():
 
 @pytest.fixture()
 def default_en_model_fixture():
-    nlp = get_spacy_model("en_core_web_sm", True, True, True)
-    return nlp
+    return get_spacy_model("en_core_web_sm", True, True, True)

@@ -39,8 +39,7 @@ def count_frequencies(language_class: Language, input_path: Path):
 
 def parallelize(func, iterator, n_jobs):
     pool = Pool(processes=n_jobs)
-    counts = pool.starmap(func, iterator)
-    return counts
+    return pool.starmap(func, iterator)
 
 def merge_counts(frequencies: List[Tuple[Counter, Counter]], output_path: str):
     """

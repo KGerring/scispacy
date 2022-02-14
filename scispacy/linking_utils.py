@@ -21,18 +21,14 @@ class Entity(NamedTuple):
 
         rep = ""
         num_aliases = len(self.aliases)
-        rep = rep + f"CUI: {self.concept_id}, Name: {self.canonical_name}\n"
-        rep = rep + f"Definition: {self.definition}\n"
-        rep = rep + f"TUI(s): {', '.join(self.types)}\n"
+        rep += f"CUI: {self.concept_id}, Name: {self.canonical_name}\n"
+        rep += f"Definition: {self.definition}\n"
+        rep += f"TUI(s): {', '.join(self.types)}\n"
         if num_aliases > 10:
-            rep = (
-                rep
-                + f"Aliases (abbreviated, total: {num_aliases}): \n\t {', '.join(self.aliases[:10])}"
-            )
+            rep += f"Aliases (abbreviated, total: {num_aliases}): \n\t {', '.join(self.aliases[:10])}"
+
         else:
-            rep = (
-                rep + f"Aliases: (total: {num_aliases}): \n\t {', '.join(self.aliases)}"
-            )
+            rep += f"Aliases: (total: {num_aliases}): \n\t {', '.join(self.aliases)}"
         return rep
 
 

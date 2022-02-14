@@ -36,7 +36,7 @@ class PerClassScorer:
         # These spans weren't predicted.
         for span in gold_spans:
             self._false_negatives[span[2]] += 1
-        for untyped_span in untyped_gold_spans:
+        for _ in untyped_gold_spans:
             self._false_negatives["untyped"] += 1
 
     def get_metric(self, reset: bool = False):

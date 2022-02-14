@@ -27,7 +27,7 @@ class UmlsSemanticTypeTree:
         # is tiny anyway.
         self.flat_nodes: List[SemanticTypeNode] = children
         self.type_id_to_node = {node.type_id: node for node in self.flat_nodes}
-        self.depth = max([node.level for node in self.flat_nodes])
+        self.depth = max(node.level for node in self.flat_nodes)
 
     def get_node_from_id(self, type_id: str) -> SemanticTypeNode:
         return self.type_id_to_node[type_id]

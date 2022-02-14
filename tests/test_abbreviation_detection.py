@@ -22,7 +22,7 @@ class TestAbbreviationDetector(unittest.TestCase):
     def test_find_abbreviation(self):
         # Basic case
         doc = self.nlp("abbreviation (abbrn)")
-        long = doc[0:1]
+        long = doc[:1]
         short = doc[2:3]
         _, long_form = find_abbreviation(long, short)
         assert long_form.text == "abbreviation"
@@ -36,21 +36,21 @@ class TestAbbreviationDetector(unittest.TestCase):
 
         # No match
         doc = self.nlp("abbreviation (aeb-b9rn)")
-        long = doc[0:1]
+        long = doc[:1]
         short = doc[2:3]
         _, long_form = find_abbreviation(long, short)
         assert long_form is None
 
         # First letter must match start of word.
         doc = self.nlp("aaaabbreviation (ab-b9rn)")
-        long = doc[0:1]
+        long = doc[:1]
         short = doc[2:3]
         _, long_form = find_abbreviation(long, short)
         assert long_form.text == "aaaabbreviation"
 
         # Matching is greedy for first letter (are is not included).
         doc = self.nlp("more words are considered aaaabbreviation (ab-b9rn)")
-        long = doc[0:5]
+        long = doc[:5]
         short = doc[6:7]
         _, long_form = find_abbreviation(long, short)
         assert long_form.text == "aaaabbreviation"
@@ -76,12 +76,11 @@ class TestAbbreviationDetector(unittest.TestCase):
         doc2 = self.detector(doc)
         assert len(doc2._.abbreviations) == 3
 
-        correct = set()
         span = doc[33:34]
-        span._.long_form = doc[0:5]
-        correct.add(span)
+        span._.long_form = doc[:5]
+        correct = {span}
         span = doc[6:7]
-        span._.long_form = doc[0:5]
+        span._.long_form = doc[:5]
         correct.add(span)
         span = doc[29:30]
         span._.long_form = doc[26:28]
